@@ -2,13 +2,19 @@ module Main where
 
 -- Run with: cat exercise2_input.txt | ./exercise 2
 
-data SubmarinePosition = SubmarinePosition Int Int deriving (Show)
+data SubmarinePosition = SubmarinePosition Int Int Int deriving (Show)
 
-foldInstructionToSubmarine  ("forward", amount) (SubmarinePosition hozPos depth) = SubmarinePosition (hozPos + amount) depth
-foldInstructionToSubmarine ("down", amount) (SubmarinePosition hozPos depth) = SubmarinePosition hozPos (depth + amount)
-foldInstructionToSubmarine ("up", amount) (SubmarinePosition hozPos depth) = SubmarinePosition hozPos (depth - amount)
+foldInstructionToSubmarine :: SubmarinePosition -> (String, Int) -> SubmarinePosition
+foldInstructionToSubmarine (SubmarinePosition hozPos depth aim) ("forward", amount) = SubmarinePosition (hozPos + amount) depth aim
+foldInstructionToSubmarine (SubmarinePosition hozPos depth aim)("down", amount) = SubmarinePosition hozPos (depth + amount) aim
+foldInstructionToSubmarine (SubmarinePosition hozPos depth aim) ("up", amount) = SubmarinePosition hozPos (depth - amount) aim
 
-multiplied (SubmarinePosition x y) = x * y
+foldInstructionToSubmarinePart2 :: SubmarinePosition -> (String, Int) -> SubmarinePosition
+foldInstructionToSubmarinePart2 (SubmarinePosition hozPos depth aim) ("forward", amount)  = SubmarinePosition (hozPos + amount) (depth + (amount * aim)) aim
+foldInstructionToSubmarinePart2 (SubmarinePosition hozPos depth aim) ("down", amount) = SubmarinePosition hozPos depth (aim + amount)
+foldInstructionToSubmarinePart2 (SubmarinePosition hozPos depth aim) ("up", amount) = SubmarinePosition hozPos depth (aim - amount)
+
+multiplied (SubmarinePosition x y _) = x * y
 
 linesToProperTuple :: [String] -> [(String, Int)]
 linesToProperTuple [] = []
@@ -18,6 +24,9 @@ main = do
   content <- getContents
   let contentLines = words content
   let instructions = linesToProperTuple contentLines
-  let submarine = foldr foldInstructionToSubmarine (SubmarinePosition 0 0) instructions
+  let submarine = foldl foldInstructionToSubmarine (SubmarinePosition 0 0 0) instructions
   print submarine
-  putStrLn $ "Multiplied = " ++ show (multiplied submarine)
+  putStrLn $ "Multiplied part one = " ++ show (multiplied submarine)
+  let submarinePartTwo = foldl foldInstructionToSubmarinePart2 (SubmarinePosition 0 0 0) instructions
+  print submarinePartTwo
+  putStrLn $ "Multiplied part two = " ++ show (multiplied submarinePartTwo)
