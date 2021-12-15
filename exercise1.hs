@@ -2000,8 +2000,6 @@ exercise1Input =  [193,
                     2658
                   ]
 
-exercise1_2 = foldr increaseWhenBigger 0 increaseWhenBigger
-
 exercise1 :: [Integer] -> Integer -> Integer
 exercise1 (head:head2:[]) sum
   | head2 > head = sum + 1
