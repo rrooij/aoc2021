@@ -45,3 +45,6 @@ main = do
   let winningBoard = minimumBy (comparing tries) boardTries
   let answerPart1 = sumOfBoard (board winningBoard) * calledNumber winningBoard
   print answerPart1
+  let latestWinningBoard = maximumBy (comparing tries) boardTries
+  let answerPart2 = sumOfBoard (board latestWinningBoard) * calledNumber latestWinningBoard
+  print answerPart2
