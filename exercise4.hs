@@ -9,7 +9,7 @@ data Board = Board { horizontalRows :: [[Int]], verticalRows :: [[Int]] } derivi
 data WinningBoard = WinningBoard { board :: Board, calledNumber :: Int, tries :: Int } deriving (Show)
 
 guessedNumbers :: [String] -> [Int]
-guessedNumbers (line:lines) = (map (\x -> read x :: Int) . splitOn ",") line
+guessedNumbers (line:_) = (map (\x -> read x :: Int) . splitOn ",") line
 
 filterBoard :: Board -> Int -> Board
 filterBoard (Board horRows vertRows ) number = Board (mapFilter horRows) (mapFilter vertRows)
