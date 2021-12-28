@@ -2,6 +2,7 @@ module Main where
 
 import Data.List
 import Data.List.Split
+import Data.Maybe
 import Data.Ord
 import System.IO
 
@@ -15,10 +16,10 @@ filterBoard :: Board -> Int -> Board
 filterBoard (Board horRows vertRows ) number = Board (mapFilter horRows) (mapFilter vertRows)
   where mapFilter rows = map (filter (/= number)) rows
 
-triesUntilSuccess :: Board -> [Int] -> Int -> WinningBoard -- board, tries and winning number
-triesUntilSuccess board [] number = WinningBoard board 0 0 -- no success
+triesUntilSuccess :: Board -> [Int] -> Int -> Maybe WinningBoard -- board, tries and winning number
+triesUntilSuccess board [] number = Nothing -- no success
 triesUntilSuccess (Board horRows vertRows) (x:xs) tries
-  | elem [] (verticalRows newBoard) || elem [] (horizontalRows newBoard) = WinningBoard newBoard x tries
+  | elem [] (verticalRows newBoard) || elem [] (horizontalRows newBoard) = Just (WinningBoard newBoard x tries)
   | otherwise = triesUntilSuccess newBoard xs (tries + 1)
   where newBoard = filterBoard (Board horRows vertRows) x
 
@@ -41,7 +42,7 @@ main = do
   let contentLines = lines contents
   let guessedNumberList = guessedNumbers contentLines
   let boards = extractBoards contentLines
-  let boardTries = map (\board -> triesUntilSuccess board guessedNumberList 0) boards
+  let boardTries = mapMaybe (\board -> triesUntilSuccess board guessedNumberList 0) boards
   let winningBoard = minimumBy (comparing tries) boardTries
   let answerPart1 = sumOfBoard (board winningBoard) * calledNumber winningBoard
   print answerPart1
